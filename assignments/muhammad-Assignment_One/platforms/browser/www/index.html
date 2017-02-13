@@ -5,13 +5,13 @@
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
         <title>Muhammad Assignment 1</title>
         
+        <!-- Add jQuery support -->
         <!-- Include jQuery Mobile stylesheets -->
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
         <!-- Include the jQuery library -->
-        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
         <!-- Include the jQuery Mobile library -->
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-        
     </head>
     <body>
         <div data-role="page" id="main">
@@ -19,9 +19,10 @@
                 <h1>Main Page</h1>
             </div>
             <div data-role="main" class="ui-content">
-                <a href="#settings">Go to settings page</a>
-                <br>
-                <a href="#game">Go to game page</a>
+                <h1>Brick Breaker</h1>
+                <h4>Muhammad Bari</h4>
+                <a href="#game" class="ui-btn">Start</a>
+                <a href="#settings" class="ui-btn">Settings</a>
             </div> 
         </div>
         <div data-role="page" id="settings">
@@ -32,6 +33,10 @@
                 <a href="#main">Go to main page</a>
                 <br>
                 <a href="#game">Go to game page</a>
+                <br>
+                <a href="#pauseGame">Go to pause game page</a>
+                <br>
+                <input type="text" id="username" placeholder="Name">
             </div> 
         </div>
         <div data-role="page" id="game">
@@ -42,6 +47,20 @@
                 <a href="#main">Go to main page</a>
                 <br>
                 <a href="#settings">Go to settings page</a>
+                <br>
+                <a href="#pauseGame">Go to pause game page</a>
+            </div> 
+        </div>
+        <div data-role="page" id="pauseGame">
+            <div data-role="header">
+                <h1>Pause Game page</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <a href="#main">Go to main page</a>
+                <br>
+                <a href="#settings">Go to settings page</a>
+                <br>
+                <a href="#game">Go to game page</a>
             </div> 
         </div>
         <script type="text/javascript" src="cordova.js"></script>

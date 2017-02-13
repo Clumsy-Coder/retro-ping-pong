@@ -3,9 +3,47 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-        <title>Blank App</title>
+        <title>Muhammad Assignment 1</title>
+        
+        <!-- Include jQuery Mobile stylesheets -->
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <!-- Include the jQuery library -->
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <!-- Include the jQuery Mobile library -->
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        
     </head>
     <body>
+        <div data-role="page" id="main">
+            <div data-role="header">
+                <h1>Main Page</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <a href="#settings">Go to settings page</a>
+                <br>
+                <a href="#game">Go to game page</a>
+            </div> 
+        </div>
+        <div data-role="page" id="settings">
+            <div data-role="header">
+                <h1>Settings Page</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <a href="#main">Go to main page</a>
+                <br>
+                <a href="#game">Go to game page</a>
+            </div> 
+        </div>
+        <div data-role="page" id="game">
+            <div data-role="header">
+                <h1>Game page</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <a href="#main">Go to main page</a>
+                <br>
+                <a href="#settings">Go to settings page</a>
+            </div> 
+        </div>
         <script type="text/javascript" src="cordova.js"></script>
     </body>
 </html>

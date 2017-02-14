@@ -3,10 +3,10 @@ var canvas;
 var cContext;
 
 //paddle
-var p1Paddle;
-var p2Paddle;
-const paddleWidth = 100;
-const paddleHeight = 15;
+var p1PaddleX;
+var p2PaddleX;
+const PADDLE_WIDTH = 100;
+const PADDLE_HEIGHT = 15;
 var paddleY_offset = 0.10;
 
 //ball
@@ -15,7 +15,7 @@ var ballYcoord;
 const ballWidth = 20;
 const ballHeight = 20;
 var ballXSpeed = 5;
-var ballYSpeed = 5;
+var ballYSpeed = -5;    //negative to move the ball up.
 
 //score
 var p1Score;
@@ -39,7 +39,20 @@ window.onload = function()
     //set the ball x and y coordinate
     ballXcoord = canvas.width / 2;
     ballYcoord = canvas.height / 2;
+    p1PaddleX = (canvas.width / 2) - PADDLE_WIDTH / 2;
+    p2PaddleX = (canvas.width / 2) - PADDLE_WIDTH / 2;
     setInterval(init, 1000/FPS);
+    
+    //get the mouse position to move player 1 paddle
+    //supports desktop and mobile device
+    $(document).on('vmousemove', function(event){
+        p1PaddleX = event.pageX - (PADDLE_WIDTH / 2);
+    });
+
+    $(document).on('taphold', function(e){
+        p1PaddleX = e.pageX - (PADDLE_WIDTH / 2);
+    });
+
 }
 
 function init()
@@ -56,16 +69,16 @@ function setup()
     
     //create the paddle
     //player 1 paddle, bottom
-    createBox((canvas.width/2) - (paddleWidth / 2),             // X coordinate
+    createBox(p1PaddleX,                                        // X coordinate
               canvas.height - (canvas.height * paddleY_offset), // Y coordinate
-              paddleWidth,                                      // width
-              paddleHeight,                                     // height
+              PADDLE_WIDTH,                                     // width
+              PADDLE_HEIGHT,                                    // height
               "white");                                         // colour
     //player 2 paddle, top
-    createBox((canvas.width/2) - (paddleWidth / 2),             // X coordinate
+    createBox(p2PaddleX,                                        // X coordinate
               (canvas.height * paddleY_offset),                 // Y coordinate
-              paddleWidth,                                      // width
-              paddleHeight,                                     // height
+              PADDLE_WIDTH,                                     // width
+              PADDLE_HEIGHT,                                    // height
               "white");                                         // colour
     
     //create the center line
@@ -88,8 +101,8 @@ function reset()
 function moveElements()
 {
     //move the ball
-//    ballYcoord -= ballYSpeed;       // minus so it can move up
     ballXcoord += ballXSpeed;
+    ballYcoord += ballYSpeed;
     
     //code to bounce the ball of the side walls (left and right)
     if(ballXcoord < 0)
@@ -101,7 +114,16 @@ function moveElements()
     {
         ballXSpeed = -ballXSpeed;
     }
-    
+    //testing if the ball moves up and down when touching the top or bottom wall
+    if(ballYcoord < 0)
+    {
+        //flip the X value
+        ballYSpeed = -ballYcoord;
+    }
+    if(ballYcoord > canvas.height)
+    {
+        ballYSpeed = -ballYSpeed;
+    }
 }
 
 function createBox(xCoord, yCoord, width, height, colour)

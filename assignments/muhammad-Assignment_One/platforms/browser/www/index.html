@@ -12,6 +12,9 @@
         <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
         <!-- Include the jQuery Mobile library -->
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        
+        <!-- Personal CSS -->
+        <link rel="stylesheet" href="css/personal.css" />
     </head>
     <body>
         <div data-role="page" id="main">
@@ -40,10 +43,12 @@
             </div> 
         </div>
         <div data-role="page" id="game">
+<!--
             <div data-role="header">
                 <h1>Game page</h1>
             </div>
-            <div data-role="main" class="ui-content">
+-->
+            <div id="gameMain" data-role="main" class="ui-content">
 <!--
                 <a href="#main">Go to main page</a>
                 <br>
@@ -51,7 +56,7 @@
                 <br>
                 <a href="#pauseGame">Go to pause game page</a>
 -->
-                <canvas id="gameCanvas"></canvas>
+                <canvas id="gameCanvas"/>
             </div> 
         </div>
         <div data-role="page" id="pauseGame">

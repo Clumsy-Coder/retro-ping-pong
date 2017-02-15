@@ -22,6 +22,8 @@ var ballDir = true      //true = go right. false = go left
 //set in window.onload
 var minRange;
 var maxRange;
+var minXRange;
+var maxXRange;
 
 //score
 var p1Score = 0;
@@ -50,6 +52,8 @@ window.onload = function()
     p2PaddleX = (canvas.width / 2) - PADDLE_WIDTH / 2;
     minRange = (canvas.height * paddleY_offset) + PADDLE_HEIGHT;
     maxRange = (canvas.height - (canvas.height * paddleY_offset)) - PADDLE_HEIGHT;
+    minXRange = 0;
+    maxXRange = canvas.width;
     setInterval(init, 1000 / FPS);
 
 }
@@ -84,7 +88,15 @@ function setup()
     drawNet();
     
     //create the score board
+    cContext.font = "30px Arial";
+    cContext.fillStyle = "white";
+    cContext.fillText(p1Score, 
+                      (canvas.width/2) * 0.15, 
+                      ((canvas.height/2) * 0.15) + canvas.height/2);
     
+    cContext.fillText(p2Score, 
+                      canvas.width - (canvas.width * 0.15), 
+                      canvas.height/2 - ((canvas.height/2) * 0.15));
     
     //create the ball
     createBox(ballXcoord - (ballWidth / 2),                     // X coordinate
@@ -98,18 +110,20 @@ function setup()
 //used when a player has scored.
 function reset()
 {
+    //    minRange = (canvas.height * paddleY_offset) + PADDLE_HEIGHT;
+    //    maxRange = (canvas.height - (canvas.height * paddleY_offset)) - PADDLE_HEIGHT;
+    
     //check who won
-    //if player 2 won
-    if(ballYcoord < (canvas.height * paddleY_offset) - PADDLE_HEIGHT)
-    {
-        //switch the ball to player 1.
-        ballYSpeed = -ballYSpeed;
-
-    }
     //if player 1 won
-    else if(ballYcoord > (canvas.height - (canvas.height * paddleY_offset)) + PADDLE_HEIGHT)
+    if(ballYcoord < minRange - PADDLE_HEIGHT*2) //*2 to offset the PADDLE_HEIGHT value.
     {
         //switch the ball to player 2.
+        ballYSpeed = -ballYSpeed;
+    }
+    //if player 2 won
+    else if(ballYcoord > maxRange + PADDLE_HEIGHT*2) //*2 to offset the PADDLE_HEIGHT value.
+    {
+        //switch the ball to player 1.
         ballYSpeed = -ballYSpeed;
     }
     
@@ -143,8 +157,8 @@ function moveElements()
 function moveBall()
 {
     //move the ball
-    ballXcoord += ballXSpeed;
     ballYcoord += ballYSpeed;
+    ballXcoord += ballXSpeed;
     
     //check if the ball is touching the side walls
     sideWallBounce();
@@ -169,7 +183,7 @@ function checkPlayer1()
     }
     
     //if the ball is close to player 1
-    else if(ballYcoord > (canvas.height - (canvas.height * paddleY_offset)) + PADDLE_HEIGHT)
+    else if(ballYcoord > maxRange - ballHeight/2)
     {
         //check if player's paddle was there.
         if(ballXcoord > p1PaddleX && 
@@ -192,7 +206,7 @@ function checkPlayer2()
     }
     
     //if the ball is close to player 2
-    else if(ballYcoord < (canvas.height * paddleY_offset) + PADDLE_HEIGHT)
+    else if(ballYcoord < minRange + ballHeight/2)
     {
         //check if player's 2 paddle was there.
         if(ballXcoord > p2PaddleX && 
@@ -210,13 +224,15 @@ function sideWallBounce()
 {
     //code to bounce the ball of the side walls (left and right)
     //don't bounce beyond the paddle. might cause some bugs
-    if(ballXcoord < 0 && (ballYcoord > minRange && ballYcoord < maxRange))
-    {
-        ballXSpeed = -ballXcoord;
-    }
-    if(ballXcoord > canvas.width && (ballYcoord > minRange && ballYcoord < maxRange))
+    if(ballXcoord < minXRange + ballWidth/2 && (ballYcoord > minRange && ballYcoord < maxRange))
     {
         ballXSpeed = -ballXSpeed;
+//        ballXSpeed = 0;
+    }
+    if(ballXcoord > maxXRange - ballWidth/2 && (ballYcoord > minRange && ballYcoord < maxRange))
+    {
+        ballXSpeed = -ballXSpeed;
+//        ballXSpeed = 0;
     }
 }
 
@@ -236,26 +252,47 @@ function moveP1()
 {
     //get the mouse position to move player 1 paddle
     //supports desktop and mobile device
-    $(document).on('vmousemove', function(event){
-        p1PaddleX = event.pageX - (PADDLE_WIDTH / 2);
-    });
-
-    $(document).on('taphold', function(e){
-        p1PaddleX = e.pageX - (PADDLE_WIDTH / 2);
-    });
+//    $(document).on('vmousemove', function(event){
+//        p1PaddleX = event.pageX - (PADDLE_WIDTH / 2);
+//    });
+//
+//    $(document).on('taphold', function(e){
+//        p1PaddleX = e.pageX - (PADDLE_WIDTH / 2);
+//    });
+    var p1PaddleX_center = p1PaddleX + (PADDLE_WIDTH / 2);
+    // +/- 35 so the computer paddle won't jitter
+    //stop the paddle once it reached the end of either side.
+    if(p1PaddleX_center < ballXcoord - 35 && 
+       (p1PaddleX + PADDLE_WIDTH <= maxXRange))
+    {
+        //move right
+        p1PaddleX += 7;
+    }
+    else if(p1PaddleX_center > ballXcoord + 35 &&
+            (p1PaddleX >= minXRange))
+    {
+        //move left
+        p1PaddleX -= 7;
+    }
 }
 
 //moving player 2 paddle
 function moveP2()
 {
+    //simple AI computer
     var p2PaddleX_center = p2PaddleX + (PADDLE_WIDTH / 2);
     // +/- 35 so the computer paddle won't jitter
-    if(p2PaddleX_center < ballXcoord - 35)
+    //stop the paddle once it reached the end of either side.
+    if(p2PaddleX_center < ballXcoord - 35 && 
+       (p2PaddleX + PADDLE_WIDTH <= maxXRange))
     {
+        //move right
         p2PaddleX += 6;
     }
-    else if(p2PaddleX_center > ballXcoord + 35)
+    else if(p2PaddleX_center > ballXcoord + 35 &&
+            (p2PaddleX >= minXRange))
     {
+        //move left
         p2PaddleX -= 6;
     }
 }

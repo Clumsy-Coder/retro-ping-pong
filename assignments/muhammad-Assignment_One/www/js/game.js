@@ -37,28 +37,35 @@ var p1Name;
 const FPS = 60;
 
 ////////////////////////////
-
+//once the page has finished loading.
 window.onload = function()
+{
+    loadGameSettings();
+    setInterval(startGame, 1000 / FPS);
+}
+
+function loadGameSettings()
 {
     $("#gameCanvas").attr("width", window.innerWidth);
     $("#gameCanvas").attr("height", window.innerHeight);
     
     canvas = document.getElementById("gameCanvas");
     cContext = canvas.getContext("2d");
-    //set the ball x and y coordinate
+    //set the ball x and y coordinate to the center of the game
     ballXcoord = canvas.width / 2;
     ballYcoord = canvas.height / 2;
+    //center the player's paddle
     p1PaddleX = (canvas.width / 2) - PADDLE_WIDTH / 2;
     p2PaddleX = (canvas.width / 2) - PADDLE_WIDTH / 2;
+    //set the min and max range for Y axis
     minRange = (canvas.height * paddleY_offset) + PADDLE_HEIGHT;
     maxRange = (canvas.height - (canvas.height * paddleY_offset)) - PADDLE_HEIGHT;
+    //set the min and max range for X axis
     minXRange = 0;
     maxXRange = canvas.width;
-    setInterval(init, 1000 / FPS);
-
 }
 
-function init()
+function startGame()
 {
     moveElements();
     setup();
@@ -84,19 +91,19 @@ function setup()
               PADDLE_HEIGHT,                                    // height
               "white");                                         // colour
     
-    //create the center line
+    //create the center line and a goal line for the players
     drawNet();
     
     //create the score board
     cContext.font = "30px Arial";
     cContext.fillStyle = "white";
-    cContext.fillText(p1Score, 
-                      (canvas.width/2) * 0.15, 
-                      ((canvas.height/2) * 0.15) + canvas.height/2);
+    cContext.fillText(p1Score,                                          // text
+                      (canvas.width/2) * 0.15,                          // X coordinate
+                      ((canvas.height/2) * 0.15) + canvas.height/2);    // Y coordinate
     
-    cContext.fillText(p2Score, 
-                      canvas.width - (canvas.width * 0.15), 
-                      canvas.height/2 - ((canvas.height/2) * 0.15));
+    cContext.fillText(p2Score,                                          // text
+                      canvas.width - (canvas.width * 0.15),             // X coordinate
+                      canvas.height/2 - ((canvas.height/2) * 0.15));    // Y coordinate
     
     //create the ball
     createBox(ballXcoord - (ballWidth / 2),                     // X coordinate
@@ -109,22 +116,18 @@ function setup()
 
 //used when a player has scored.
 function reset()
-{
-    //    minRange = (canvas.height * paddleY_offset) + PADDLE_HEIGHT;
-    //    maxRange = (canvas.height - (canvas.height * paddleY_offset)) - PADDLE_HEIGHT;
-    
-    //check who won
-    //if player 1 won
+{   
+    //if player 1 scored
     if(ballYcoord < minRange - PADDLE_HEIGHT*2) //*2 to offset the PADDLE_HEIGHT value.
     {
         //switch the ball to player 2.
-        ballYSpeed = -ballYSpeed;
+//        ballYSpeed = -ballYSpeed;
     }
-    //if player 2 won
+    //if player 2 scored
     else if(ballYcoord > maxRange + PADDLE_HEIGHT*2) //*2 to offset the PADDLE_HEIGHT value.
     {
         //switch the ball to player 1.
-        ballYSpeed = -ballYSpeed;
+//        ballYSpeed = -ballYSpeed;
     }
     
     //reset the position of the ball
@@ -164,13 +167,12 @@ function moveBall()
     sideWallBounce();
     
     //check if the ball is close to player 2.
-    //  check if it touched the paddle or player 1 scored.
+    //check if it touched the paddle or player 1 scored.
     checkPlayer2();
     
     //check if the ball is close to player 1.
-    //  check if it touched the paddle or player 2 scored.
+    //check if it touched the paddle or player 2 scored.
     checkPlayer1();
-    
 }
 
 function checkPlayer1()
@@ -227,12 +229,10 @@ function sideWallBounce()
     if(ballXcoord < minXRange + ballWidth/2 && (ballYcoord > minRange && ballYcoord < maxRange))
     {
         ballXSpeed = -ballXSpeed;
-//        ballXSpeed = 0;
     }
     if(ballXcoord > maxXRange - ballWidth/2 && (ballYcoord > minRange && ballYcoord < maxRange))
     {
         ballXSpeed = -ballXSpeed;
-//        ballXSpeed = 0;
     }
 }
 

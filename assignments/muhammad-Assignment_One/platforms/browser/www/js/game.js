@@ -8,12 +8,13 @@ var p2PaddleX;
 const PADDLE_WIDTH = 100;
 const PADDLE_HEIGHT = 15;
 var paddleY_offset = 0.10;
+var p2PaddleX_speed;
 
 //ball
 var ballXcoord;
 var ballYcoord;
-const ballWidth = 20;
-const ballHeight = 20;
+const BALL_WIDTH = 20;
+const BALL_HEIGHT = 20;
 var ballXSpeed = 5;
 var ballYSpeed = -5;    //negative to move the ball up.
 var ballDir = true      //true = go right. false = go left
@@ -28,7 +29,7 @@ var maxXRange;
 //score
 var p1Score = 0;
 var p2Score = 0;
-var scoreThreshold = 3; //how long will be. set in loadUserSettings()
+var scoreThreshold = 3; //how long the game will be. set in loadUserSettings()
 var winScreen = false;
 
 //player name
@@ -45,11 +46,12 @@ window.onload = function()
     setInterval(startGame, 1000 / FPS);
 }
 
+//set variable settings to get the game going
 function loadGameSettings()
 {
     $("#gameCanvas").attr("width", window.innerWidth);
     $("#gameCanvas").attr("height", window.innerHeight);
-    
+
     canvas = document.getElementById("gameCanvas");
     cContext = canvas.getContext("2d");
     //set the ball x and y coordinate to the center of the game
@@ -68,10 +70,20 @@ function loadGameSettings()
     loadUserSettings();
 }
 
+//load user settings. name and difficulty
 function loadUserSettings()
 {
     //get the user's name. default is 'player1'
-    
+    var name = $("#username").val();
+    if(name.length == 0)
+    {
+        p1Name = "player 1";
+    }
+    else
+    {
+        p1Name = name;
+    }
+
     //get difficulty
         //easy:   ball goes slow
         //        computer's paddle move slowly
@@ -79,17 +91,32 @@ function loadUserSettings()
         //normal: ball goes in normal speed
         //        computer's paddle moves in normal speed
         //        score threshold is 10
-        //hard:   ball goes normal speed. Gets faster after each successful paddle strike
-        //        computer's paddle moves in higher speed
-        //        score threshold is 20
+    var difficulty = $("#difficulty :radio:checked").val();
+
+    if(difficulty == "easy")
+    {
+        ballXSpeed = 3;
+        ballYSpeed = -3;
+        p2PaddleX_speed = 3;
+        scoreThreshold = 5;
+    }
+    else if(difficulty == "normal")
+    {
+        ballXSpeed = 5;
+        ballYSpeed = -5;
+        p2PaddleX_speed = 6;
+        scoreThreshold = 10;
+    }
 }
 
+//draw the elements and move them.
 function startGame()
 {
     moveElements();
     drawAll();
 }
 
+//reset the score. place the paddle (x axis only) and the ball in the center.
 function restartGame()
 {
     //set the paddle location
@@ -104,6 +131,7 @@ function restartGame()
     winScreen = false;
 }
 
+//showen when a player wins the game.
 function showWinScreen()
 {
     cContext.font = "30px Arial";
@@ -113,8 +141,8 @@ function showWinScreen()
     {
         var msg = p1Name + " won!";
         cContext.textAlign = "center";
-        cContext.fillText("'" + p1Name + "' wins!", 
-                          canvas.width / 2, 
+        cContext.fillText("'" + p1Name + "' wins!",
+                          canvas.width / 2,
                           canvas.height/2);
 
     }
@@ -122,15 +150,15 @@ function showWinScreen()
     else
     {
         cContext.textAlign = "center";
-        cContext.fillText("'player 2' wins!", 
-                          canvas.width / 2, 
+        cContext.fillText("'player 2' wins!",
+                          canvas.width / 2,
                           canvas.height/2);
     }
 
     cContext.font = "20px Arial";
     cContext.textAlign = "center";
-    cContext.fillText("Click or tap to continue", 
-                          canvas.width / 2, 
+    cContext.fillText("Click or tap to continue",
+                          canvas.width / 2,
                           (canvas.height - (canvas.height * 0.30)));
 
     $(document).on('mousedown', function(event){
@@ -147,14 +175,14 @@ function drawAll()
 {
     //create the background
     createBox(0, 0, canvas.width, canvas.height, "black");
-    
+
     //if the game has ended
     if(winScreen)
     {
         showWinScreen();
         return;
     }
-    
+
     //create the paddle
     //player 1 paddle, bottom
     createBox(p1PaddleX,                                        // X coordinate
@@ -168,33 +196,33 @@ function drawAll()
               PADDLE_WIDTH,                                     // width
               PADDLE_HEIGHT,                                    // height
               "white");                                         // colour
-    
+
     //create the center line and a goal line for the players
     drawNet();
-    
+
     //create the score board
     cContext.font = "30px Arial";
     cContext.fillStyle = "white";
     cContext.fillText(p1Score,                                          // text
                       (canvas.width/2) * 0.15,                          // X coordinate
                       ((canvas.height/2) * 0.15) + canvas.height/2);    // Y coordinate
-    
+
     cContext.fillText(p2Score,                                          // text
                       canvas.width - (canvas.width * 0.15),             // X coordinate
                       canvas.height/2 - ((canvas.height/2) * 0.15));    // Y coordinate
-    
+
     //create the ball
-    createBox(ballXcoord - (ballWidth / 2),                     // X coordinate
-              ballYcoord - (ballHeight / 2),                    // Y coordinate
-              ballWidth,                                        // width
-              ballHeight,                                       // height
+    createBox(ballXcoord - (BALL_WIDTH / 2),                     // X coordinate
+              ballYcoord - (BALL_HEIGHT / 2),                    // Y coordinate
+              BALL_WIDTH,                                        // width
+              BALL_HEIGHT,                                       // height
               "red");                                           // colour
-    
+
 }
 
 //used when a player has scored.
 function reset()
-{   
+{
     //if player 1 scored
     if(ballYcoord < minRange - PADDLE_HEIGHT*2) //*2 to offset the PADDLE_HEIGHT value.
     {
@@ -207,20 +235,18 @@ function reset()
         //switch the ball to player 1.
         ballYSpeed = -ballYSpeed;
     }
-    
+
     //check if either of the players has reached the score threshold
     if(p1Score >= scoreThreshold || p2Score >= scoreThreshold)
     {
-        //reset the score
-//        p1Score = p2Score = 0;
         winScreen = true;
     }
-    
+
     //reset the position of the ball
     ballXcoord = canvas.width / 2;
     ballYcoord = canvas.height / 2;
-    
-    //change ball X direction when someone scores. 
+
+    //change ball X direction when someone scores.
     //true = go right
     //false = go left
     if(ballDir)
@@ -248,64 +274,78 @@ function moveElements()
     moveP2();
 }
 
+//move the ball and check if a player
+//scored or deflected the ball with a paddle.
 function moveBall()
 {
     //move the ball
     ballYcoord += ballYSpeed;
     ballXcoord += ballXSpeed;
-    
+
     //check if the ball is touching the side walls
     sideWallBounce();
-    
+
     //check if the ball is close to player 2.
     //check if it touched the paddle or player 1 scored.
     checkPlayer2();
-    
+
     //check if the ball is close to player 1.
     //check if it touched the paddle or player 2 scored.
     checkPlayer1();
 }
 
+//check if player 2 scored or
+//player 1 deflected the ball with the paddle
 function checkPlayer1()
 {
     //if player 2 scored
-    if(ballYcoord > canvas.height)
+    if(ballYcoord > canvas.height ||                                //check if it went passed horizontally
+       (ballYcoord > canvas.height && ballXcoord <= 0) ||           //check if it went passed left diagonaly
+       (ballYcoord > canvas.height && ballXcoord >= canvas.width))  //check if it went passed right diagonaly
     {
         p2Score++;
         reset();
     }
-    
+
     //if the ball is close to player 1
-    else if(ballYcoord > maxRange - ballHeight/2)
+    else if(ballYcoord > maxRange - BALL_HEIGHT/2 &&
+            ballYcoord < maxRange)
     {
         //check if player's paddle was there.
-        if(ballXcoord > p1PaddleX && 
+        if(ballXcoord > p1PaddleX &&
            ballXcoord < p1PaddleX + PADDLE_WIDTH)
         {
             ballYSpeed = -ballYSpeed;
+            //bouncing in an angle
             var deltaX = ballXcoord - (p1PaddleX + (PADDLE_WIDTH / 2));
             ballXSpeed = deltaX * 0.35;
         }
     }
 }
 
+//check if player 1 scored or
+//player 1 deflected the ball with the paddle
 function checkPlayer2()
 {
     //if player 1 scored
-    if(ballYcoord < 0)
+    if(ballYcoord < 0 ||                                //check if it went passed horizontally
+       (ballYcoord < 0 && ballXcoord <= 0) ||           //check if it went passed left diagonaly
+       (ballYcoord < 0 && ballXcoord >= canvas.width))  //check if it went passed right diagonaly
     {
         p1Score++;
         reset();
     }
-    
+
     //if the ball is close to player 2
-    else if(ballYcoord < minRange + ballHeight/2)
+    else if(ballYcoord < minRange + BALL_HEIGHT/2 &&
+            ballYcoord > minRange)
     {
         //check if player's 2 paddle was there.
-        if(ballXcoord > p2PaddleX && 
+        if(ballXcoord > p2PaddleX &&
            ballXcoord < p2PaddleX + PADDLE_WIDTH)
         {
             ballYSpeed = -ballYSpeed;
+            //bouncing in an angle
             var deltaX = ballXcoord - (p2PaddleX + (PADDLE_WIDTH / 2));
             ballXSpeed = deltaX * 0.35;
         }
@@ -317,19 +357,19 @@ function sideWallBounce()
 {
     //code to bounce the ball of the side walls (left and right)
     //don't bounce beyond the paddle. might cause some bugs
-    if(ballXcoord < minXRange + ballWidth/2 && (ballYcoord > minRange && ballYcoord < maxRange))
+    if(ballXcoord < minXRange + BALL_WIDTH/2 && (ballYcoord > minRange && ballYcoord < maxRange))
     {
         ballXSpeed = -ballXSpeed;
     }
-    if(ballXcoord > maxXRange - ballWidth/2 && (ballYcoord > minRange && ballYcoord < maxRange))
+    if(ballXcoord > maxXRange - BALL_WIDTH/2 && (ballYcoord > minRange && ballYcoord < maxRange))
     {
         ballXSpeed = -ballXSpeed;
     }
 }
 
-//draw a net in the center of the page
+//draw a net in the center and for the paddles
 function drawNet()
-{   
+{
     for(var i = 0; i < canvas.width; i += 40)
     {
         createBox(i, canvas.height/2-1, 20, 2, "white");
@@ -350,22 +390,6 @@ function moveP1()
     $(document).on('taphold', function(e){
         p1PaddleX = e.pageX - (PADDLE_WIDTH / 2);
     });
-    
-//    var p1PaddleX_center = p1PaddleX + (PADDLE_WIDTH / 2);
-//    // +/- 35 so the computer paddle won't jitter
-//    //stop the paddle once it reached the end of either side.
-//    if(p1PaddleX_center < ballXcoord - 35 && 
-//       (p1PaddleX + PADDLE_WIDTH <= maxXRange))
-//    {
-//        //move right
-//        p1PaddleX += 7;
-//    }
-//    else if(p1PaddleX_center > ballXcoord + 35 &&
-//            (p1PaddleX >= minXRange))
-//    {
-//        //move left
-//        p1PaddleX -= 7;
-//    }
 }
 
 //moving player 2 paddle
@@ -375,17 +399,17 @@ function moveP2()
     var p2PaddleX_center = p2PaddleX + (PADDLE_WIDTH / 2);
     // +/- 35 so the computer paddle won't jitter
     //stop the paddle once it reached the end of either side.
-    if(p2PaddleX_center < ballXcoord - 35 && 
+    if(p2PaddleX_center < ballXcoord - 35 &&
        (p2PaddleX + PADDLE_WIDTH <= maxXRange))
     {
         //move right
-        p2PaddleX += 6;
+        p2PaddleX += p2PaddleX_speed;
     }
     else if(p2PaddleX_center > ballXcoord + 35 &&
             (p2PaddleX >= minXRange))
     {
         //move left
-        p2PaddleX -= 6;
+        p2PaddleX -= p2PaddleX_speed;
     }
 }
 

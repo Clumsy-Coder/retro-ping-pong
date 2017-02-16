@@ -18,57 +18,36 @@
     </head>
     <body>
         <div data-role="page" id="main">
-            <div data-role="header">
-                <h1>Main Page</h1>
-            </div>
             <div data-role="main" class="ui-content">
-                <h1>Brick Breaker</h1>
+                <h1>Retro Ping Pong</h1>
                 <h4>Muhammad Bari</h4>
-                <a href="#game" class="ui-btn">Start</a>
-                <a href="#settings" class="ui-btn">Settings</a>
+                <a href="#gamePage" class="ui-btn">Start</a>
+                <a href="#settings" data-role="button">Settings</a>
             </div> 
         </div>
         <div data-role="page" id="settings">
             <div data-role="header">
+                <a href="#main" data-icon="delete">Cancel</a>
                 <h1>Settings Page</h1>
+                <a href="index.html" data-icon="edit" onclick="loadUserSettings()">Save</a>
             </div>
             <div data-role="main" class="ui-content">
-                <a href="#main">Go to main page</a>
                 <br>
-                <a href="#game">Go to game page</a>
-                <br>
-                <a href="#pauseGame">Go to pause game page</a>
-                <br>
-                <input type="text" id="username" placeholder="Name">
+                <input type="text" id="username" placeholder="Name" maxlength="15">
+                <fieldset data-role="controlgroup" id="difficulty">
+                    <legend>Select difficulty</legend>
+                        <!-- Easy difficulty -->
+                        <input type="radio" name="difficulty" id="difficulty-easy" value="easy" checked="checked" />
+                        <label for="difficulty-easy">Easy</label>
+                        <!-- Normal difficulty -->
+                        <input type="radio" name="difficulty" id="difficulty-normal" value="normal"  />
+                        <label for="difficulty-normal">Normal</label>
+                </fieldset>
             </div> 
         </div>
-        <div data-role="page" id="game">
-<!--
-            <div data-role="header">
-                <h1>Game page</h1>
-            </div>
--->
+        <div data-role="page" id="gamePage">
             <div id="gameMain" data-role="main" class="ui-content">
-<!--
-                <a href="#main">Go to main page</a>
-                <br>
-                <a href="#settings">Go to settings page</a>
-                <br>
-                <a href="#pauseGame">Go to pause game page</a>
--->
                 <canvas id="gameCanvas"/>
-            </div> 
-        </div>
-        <div data-role="page" id="pauseGame">
-            <div data-role="header">
-                <h1>Pause Game page</h1>
-            </div>
-            <div data-role="main" class="ui-content">
-                <a href="#main">Go to main page</a>
-                <br>
-                <a href="#settings">Go to settings page</a>
-                <br>
-                <a href="#game">Go to game page</a>
             </div> 
         </div>
         <script type="text/javascript" src="js/game.js"></script>

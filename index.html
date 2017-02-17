@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Muhammad Assignment 1</title>
+        
+        <!-- Add jQuery support -->
+        <!-- Include jQuery Mobile stylesheets -->
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <!-- Include the jQuery library -->
+        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <!-- Include the jQuery Mobile library -->
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        
+        <!-- Personal CSS -->
+        <link rel="stylesheet" href="css/personal.css" />
+    </head>
+    <body>
+        <div data-role="page" id="main" data-theme="b">
+            <div data-role="main" class="ui-content">
+                <h1>Retro Ping Pong</h1>
+                <h4>Muhammad Bari</h4>
+                <a href="#gamePage" data-role="button" style="background: red; color: white;">Start</a>
+                <a href="#settings" data-role="button" 
+                   style="background: CornflowerBlue; color: white;">Settings</a>
+            </div> 
+        </div>
+        <div data-role="page" id="settings" data-theme="b">
+            <div data-role="header">
+<!--                <a href="#main" data-icon="delete" style="background: red; color: white;">Cancel</a>-->
+                <h1>Settings</h1>
+                <a href="index.html" data-icon="edit" onclick="loadUserSettings()" style="background: green; color: white;">Save</a>
+            </div>
+            <div data-role="main" class="ui-content">
+                <br>
+                <input type="text" id="username" placeholder="Name" maxlength="15" data-theme="a">
+                <br>
+                <fieldset data-role="controlgroup" id="difficulty" data-theme="a">
+                    <legend>Select difficulty</legend>
+                        <!-- Easy difficulty -->
+                        <input type="radio" name="difficulty" id="difficulty-easy" value="easy" checked="checked" />
+                        <label for="difficulty-easy">Easy</label>
+                        <!-- Normal difficulty -->
+                        <input type="radio" name="difficulty" id="difficulty-normal" value="normal"  />
+                        <label for="difficulty-normal">Normal</label>
+                </fieldset>
+            </div> 
+        </div>
+        <div data-role="page" id="gamePage">
+            <div id="gameMain" data-role="main" class="ui-content">
+                <canvas id="gameCanvas"/>
+            </div> 
+        </div>
+        <script type="text/javascript" src="js/game.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+    </body>
+</html>

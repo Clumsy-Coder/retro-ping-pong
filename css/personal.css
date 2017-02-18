@@ -9,3 +9,12 @@
     padding: 0px;
     margin: 0px;
 }
+
+canvas
+{
+    padding: 0;
+    margin: auto;
+    display: block;
+    height: auto;
+    width: 100%;
+}
